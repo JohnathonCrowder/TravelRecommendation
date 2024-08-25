@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelRecommendations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin-right: 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+        .search-form {
+            display: flex;
+        }
+        .search-form input[type="text"] {
+            padding: 5px;
+            margin-right: 5px;
+        }
+        .search-form button {
+            padding: 5px 10px;
+            background-color: #555;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .place {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+    </style>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        let travelData = {
+            beach: [
+                {
+                    name: "Bali Beaches",
+                    country: "Indonesia",
+                    description: "Beautiful white sand beaches with crystal clear waters.",
+                    image: "bali-beach.jpg"
+                },
+                {
+                    name: "Maldives",
+                    country: "Maldives",
+                    description: "Pristine beaches and luxurious overwater bungalows.",
+                    image: "maldives-beach.jpg"
+                }
+            ],
+            temple: [
+                {
+                    name: "Angkor Wat",
+                    country: "Cambodia",
+                    description: "Ancient temple complex with stunning architecture.",
+                    image: "angkor-wat.jpg"
+                },
+                {
+                    name: "Golden Temple",
+                    country: "India",
+                    description: "Sikh holy site known for its golden dome.",
+                    image: "golden-temple.jpg"
+                }
+            ],
+            country: [
+                {
+                    name: "Japan",
+                    description: "A blend of ancient traditions and cutting-edge technology.",
+                    image: "japan.jpg"
+                },
+                {
+                    name: "Italy",
+                    description: "Rich in history, art, and cuisine.",
+                    image: "italy.jpg"
+                }
+            ]
+        };
+    
+        function displayRecommendations(recommendations) {
+            const resultsContainer = document.getElementById('results');
+            if (!resultsContainer) {
+                console.error('Results container not found');
+                return;
+            }
+    
+            resultsContainer.innerHTML = ''; // Clear previous results
+    
+            if (recommendations.length === 0) {
+                resultsContainer.innerHTML = '<p>No results found. Try searching for "beach", "temple", or "country".</p>';
+                return;
+            }
+    
+            recommendations.forEach(place => {
+                const placeElement = document.createElement('div');
+                placeElement.classList.add('place');
+                placeElement.innerHTML = `
+                    <h2>${place.name}</h2>
+                    <img src="${place.image}" alt="${place.name}" style="max-width: 100%; height: auto;">
+                    <p>${place.country ? `Country: ${place.country}` : ''}</p>
+                    <p>${place.description}</p>
+                `;
+                resultsContainer.appendChild(placeElement);
+            });
+        }
+    
+        function filterRecommendations(keyword) {
+            keyword = keyword.toLowerCase().trim();
+            
+            if (travelData[keyword]) {
+                return travelData[keyword];
+            } else {
+                // If the keyword doesn't match exactly, try to find partial matches
+                for (let key in travelData) {
+                    if (key.includes(keyword) || keyword.includes(key)) {
+                        return travelData[key];
+                    }
+                }
+            }
+            return [];
+        }
+    
+        // Add event listener to the search form
+        const searchForm = document.querySelector('.search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const searchInput = document.querySelector('input[name="search"]');
+                if (searchInput) {
+                    const keyword = searchInput.value;
+                    const filteredResults = filterRecommendations(keyword);
+                    displayRecommendations(filteredResults);
+                }
+            });
+        }
+    
+        // Add event listener to the reset button
+        const resetButton = document.querySelector('button[type="reset"]');
+        if (resetButton) {
+            resetButton.addEventListener('click', function() {
+                const resultsContainer = document.getElementById('results');
+                if (resultsContainer) {
+                    resultsContainer.innerHTML = ''; // Clear results
+                }
+            });
+        }
+    });</script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="travel_recommendation.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+        <form class="search-form">
+            <input type="text" placeholder="Search beach, temple, or country" name="search">
+            <button type="submit">Search</button>
+            <button type="reset">Reset</button>
+        </form>
+    </nav>
+
+    <div class="content">
+        <h1>Welcome to TravelRecommendations</h1>
+        <p>Discover your next adventure with TravelRecommendations! We provide personalized travel suggestions based on your preferences. Whether you're looking for beautiful beaches, historic temples, or exciting countries to explore, we've got you covered.</p>
+        <p>Start your journey today by searching for "beach", "temple", or "country" in the search bar above!</p>
+
+        <div id="results">
+            <!-- Travel recommendations will be displayed here -->
+        </div>
+    </div>
+</body>
+</html>
